@@ -1,7 +1,8 @@
 cards:
-star 🟊
-moon 🌖
-sun  ☀️
+star   🟊
+moon   🌖
+sun    ☀️
+planet 🌑︎
 
 per suite:
 empty (0)
@@ -14,15 +15,6 @@ empty (0)
 7
 8
 9
-prince (10)
-hero (11)
-emporer (12)
-
-rules:
-- 5 rows
-- move a card to another thats 1 higher
-- move a card onto a different suite. cannot be same suite.
-
-names for game?
-- celestaire
-- astrolitaire
+knight (10)
+prince (11)
+king (12)
