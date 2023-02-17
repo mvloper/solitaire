@@ -1,4 +1,4 @@
-CARD_NAMES = [
+"""CARD_NAMES = [
 #STARS:
    "🟊  Empty Star", #0
    "🟊  One of Stars", #1
@@ -54,5 +54,57 @@ CARD_NAMES = [
    "🌑︎ Nine of Planets", #48
    "🌑︎ Knight of Planets", #49
    "🌑︎ Prince of Planets", #50
-   "🌑︎ King of Planets" #51
-]
+   "🌑︎ Queen of Planets" #51
+]"""
+
+CARD_NAMES = ['🟆 0', '🟆 1', '🟆 2', '🟆 3', '🟆 4', '🟆 5', '🟆 6', '🟆 7', '🟆 8', '🟆 9', '🟆 J', '🟆 P', '🟆 K', '⏺ 0', '⏺ 1', '⏺ 2', '⏺ 3', '⏺ 4', '⏺ 5', '⏺ 6', '⏺ 7', '⏺ 8', '⏺ 9', '⏺ J', '⏺ P', '⏺ K', '🌜︎︎0', '🌜︎︎1', '🌜︎︎2', '🌜︎︎3', '🌜︎︎4', '🌜︎︎5', '🌜︎︎6', '🌜︎︎7', '🌜︎︎8', '🌜︎︎9', '🌜︎︎J', '🌜︎︎P', '🌜︎︎K', '🪐0', '🪐1', '🪐2', '🪐3', '🪐4', '🪐5', '🪐6', '🪐7', '🪐8', '🪐9', '🪐J', '🪐P', '🪐K']
+
+def titleCards():
+   CARDNAMES.clear()
+   for x in range(13):
+      if x < 10:
+         cardtitle = "🟆 " + str(x)
+         CARDNAMES.append(cardtitle)
+      elif x == 10:
+         CARDNAMES.append("🟆 J")
+      elif x == 11:
+         CARDNAMES.append("🟆 P")
+      elif x == 12:
+         CARDNAMES.append("🟆 K")
+
+   for x in range(13):
+      if x < 10:
+         cardtitle = "⏺ " + str(x)
+         CARDNAMES.append(cardtitle)
+      elif x == 10:
+         CARDNAMES.append("⏺ J")
+      elif x == 11:
+         CARDNAMES.append("⏺ P")
+      elif x == 12:
+         CARDNAMES.append("⏺ K")
+
+   for x in range(13):
+      if x < 10:
+         cardtitle = "🌜︎︎" + str(x)
+         CARDNAMES.append(cardtitle)
+      elif x == 10:
+         CARDNAMES.append("🌜︎︎J")
+      elif x == 11:
+         CARDNAMES.append("🌜︎︎P")
+      elif x == 12:
+         CARDNAMES.append("🌜︎︎K")
+
+   for x in range(13):
+      if x < 10:
+         cardtitle = "🪐" + str(x)
+         CARDNAMES.append(cardtitle)
+      elif x == 10:
+         CARDNAMES.append("🪐J")
+      elif x == 11:
+         CARDNAMES.append("🪐P")
+      elif x == 12:
+         CARDNAMES.append("🪐K")
+
+   print(CARDNAMES)
+
+#titleCards()

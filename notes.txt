@@ -1,8 +1,8 @@
 cards:
-star   🟊
-moon   🌖
-sun    ☀️
-planet 🌑︎
+star   🟆
+moon   🌜︎︎
+sun    ⏺
+planet 🪐
 
 per suite:
 empty (0)
