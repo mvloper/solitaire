@@ -40,25 +40,54 @@ def winCheck():#returns true if you have won or false if you havent won yet
    for x in SHOWN_ROWS:
       if len(x) == 0:
          emptyRows += 1
-   if emptyRows >= 4 and len(DECK) == 0:
+   if emptyRows >= 3 and len(DECK) == 0:
       return True
    else:
       return(False)
-      
 
-def setup():
+def setup(): #setting up the decks to start a new game
    shuffleDeck()
+   StupidBugCheckDeck()
    buildRows()
+   StupidBugCheckRows()
    revealTop()
 
-def shuffleDeck():#random order from ORDERED_DECK to DECK
+def shuffleDeck(): #takes cards from ORDERED_DECK and adds them to DECK in a random order
    for x in range(len(ORDERED_DECK)):
       card = random.choice(ORDERED_DECK)
       DECK.append(card)
       ORDERED_DECK.remove(card)
 
-def buildRows():#adds random cards to the rows
-   numberOfCards = 1#first row has 1 card, goes up 1 for each row.
+def StupidBugCheckDeck():
+   #check if deck has repeats
+   for x in DECK:
+      repeats = 0
+      for y in DECK:
+         if x == y:
+            repeats += 1
+      if repeats > 1:
+         print("deck repeats card: ", x)
+   
+def StupidBugCheckRows():
+   for secretRow in SECRET_ROWS:
+      for card in secretRow:
+         cardRepeat = 0
+         for row2 in SECRET_ROWS:
+            for check in row2:
+               if check == card:
+                  cardRepeat += 1
+         for row3 in SHOWN_ROWS:
+            for check in row3:
+               if check == card:
+                  cardRepeat += 1
+         for deckCard in DECK:
+            if deckCard == card:
+               cardRepeat += 1
+         if cardRepeat > 1:
+            print("card repeats: ", card)
+
+def buildRows(): #adds random cards to the rows
+   numberOfCards = 1 #first row has 1 card, goes up 1 for each row.
    for row in SECRET_ROWS:
       for i in range(numberOfCards):
          card = random.choice(DECK)
@@ -66,7 +95,7 @@ def buildRows():#adds random cards to the rows
          DECK.remove(card)
       numberOfCards += 1
 
-def revealTop():
+def revealTop(): #checks if any shown rows are empty, and flips the top of the hidden row
    for x in range(len(SECRET_ROWS)):
       secretRow = SECRET_ROWS[x]
       shownRow = SHOWN_ROWS[x]
@@ -76,7 +105,7 @@ def revealTop():
          shownRow.append(card)
          secretRow.remove(card)
 
-def findCardName(suit, numbr):
+def findCardName(suit, numbr): #returns the printed symbol for given card
    if suit == "star":
       card = CARD_NAMES[numbr]
       return(card)
@@ -91,7 +120,7 @@ def findCardName(suit, numbr):
       return(card)
 
 
-def printTopCards():
+def printTopCards(): #clears terminal and prints all rows
    os.system('cls' if os.name == 'nt' else 'clear')#got from https://stackoverflow.com/questions/2084508/clear-terminal-in-python
    row_number = 0
    symbol = [ "🟆 ", "⏺ ", "🌜︎︎", "🪐" ]
@@ -110,7 +139,8 @@ def printTopCards():
       row_number += 1
       
 
-def moveCard(x, y, z): # oldrow and newrow will be numbers corresponding to the sublist in SHOWN_ROWS
+def moveCard(x, y, z): #moves all cards from one stack to another, or one card from deck to stack
+   #x = old row y = new row z = top card of deck if x == DECK
    def rowAppend():
       for x in oldRow:
          newRow.append(x)
@@ -135,29 +165,31 @@ def moveCard(x, y, z): # oldrow and newrow will be numbers corresponding to the 
                newRow.append(z)
                DECK.remove(z)
    else:
-      fliprow = SECRET_ROWS[x]
-      oldRow = SHOWN_ROWS[x]
-      newRow = SHOWN_ROWS[y]
-      ORbottomCard = oldRow[0]
-      if len(newRow) == 0:
-         if ORbottomCard[1] >= 10:
-            rowAppend()
+      fliprow = SECRET_ROWS[int(x)]
+      oldRow = SHOWN_ROWS[int(x)]
+      newRow = SHOWN_ROWS[int(y)]
+      if len(oldRow) != 0:
+         ORbottomCard = oldRow[0]
+         if len(newRow) == 0:
+            if ORbottomCard[1] >= 10:
+               rowAppend()
+            else:
+                  print("you can't do that")
          else:
-               print("you can't do that")
-      else:
-         NRtopCard = newRow[len(newRow)-1]
-         if ORbottomCard[0] == 'star' or ORbottomCard[0] == 'sun':
-            if ( NRtopCard[0] == 'moon' or NRtopCard[0] == 'planet' ) and ( NRtopCard[1] == ORbottomCard[1] + 1 ):
-               rowAppend()
-            else:
-               print("you can't do that")
-         elif ORbottomCard[0] == 'moon' or ORbottomCard[0] == 'planet':
-            if ( NRtopCard[0] == 'sun' or NRtopCard[0] == 'star' ) and ( NRtopCard[1] == ORbottomCard[1] + 1 ):
-               rowAppend()
-            else:
-               print("you can't do that")
+            NRtopCard = newRow[len(newRow)-1]
+            if ORbottomCard[0] == 'star' or ORbottomCard[0] == 'sun':
+               if ( NRtopCard[0] == 'moon' or NRtopCard[0] == 'planet' ) and ( NRtopCard[1] == ORbottomCard[1] + 1 ):
+                  rowAppend()
+               else:
+                  print("you can't do that")
+            elif ORbottomCard[0] == 'moon' or ORbottomCard[0] == 'planet':
+               if ( NRtopCard[0] == 'sun' or NRtopCard[0] == 'star' ) and ( NRtopCard[1] == ORbottomCard[1] + 1 ):
+                  rowAppend()
+               else:
+                  print("you can't do that")
 
-def tableau(x, y, deckNumber):#input x is the row the tabled card is in
+def tableau(x, y, deckNumber): #moves top card from stack or deck to its tableau
+   #input x is the row the tabled card is in
    def tableauStack(STACK, CARD, ROW):
       if CARD[1] == 0:
          if len(STACK) == 0:
@@ -180,8 +212,8 @@ def tableau(x, y, deckNumber):#input x is the row the tabled card is in
       elif tableCardSuit == 'planet':
          tableauStack(PLANETSTACK, tableCard, DECK)
    else:
-      tableRow = SHOWN_ROWS[int(x)]
-      if len(tableRow) > 0 and int(x) < 7:
+      tableRow = SHOWN_ROWS[x]
+      if len(tableRow) > 0 and x < 7:
          tableCard = tableRow[len(tableRow)-1]
          tableCardSuit = tableCard[0]
          if tableCardSuit == 'star':
@@ -198,10 +230,9 @@ def tableau(x, y, deckNumber):#input x is the row the tabled card is in
    else:
       playGame(3)
 
-def deckIsOpen(deckNumber):
+def deckIsOpen(deckNumber): #asks for input when the deck is open
    global howManyMoves
-   gamewin = winCheck()
-   if len(DECK) > 0 and gamewin == False:
+   if len(DECK) > 0 and winCheck() == False:
       printTopCards()
       while deckNumber >= len(DECK):
          deckNumber -= 1
@@ -213,11 +244,12 @@ def deckIsOpen(deckNumber):
          start()
       elif flipDeck == "top":
          rowinput = input("put card on which row? ")
-         if rowinput != "":
+         if rowinput.isnumeric() == True:
             row = int(rowinput)
             if row >=0 and row <= 6:
                decklength = len(DECK)
                moveCard(DECK, row, topcard)
+               StupidBugCheckRows()
                if decklength != len(DECK) and deckNumber > 0:
                   deckNumber -= 1
                if deckNumber >= 0:
@@ -233,15 +265,20 @@ def deckIsOpen(deckNumber):
             deckIsOpen(deckNumber+4)
       elif flipDeck == "table":
          tablecard = input("card from which row [number] or deck [deck]?")
+         StupidBugCheckRows()
          if tablecard == "deck":
             tableau(tablecard, topcard, deckNumber-1)
+         elif tablecard.isnumeric() == True:
+            tableau(int(tablecard), "whatever", deckNumber)
          else:
-            tableau(tablecard, "whatever", deckNumber)
+            deckIsOpen(deckNumber)
       elif flipDeck == "move":
-         oldRow = int(input("which row do you want to move? "))
-         newRow = int(input("which row will you place it on? "))
-         if oldRow != "" and oldRow >=0 and oldRow <= 6 and newRow != "" and newRow >=0 and newRow <= 6:
+         oldRow = input("which row do you want to move? ")
+         newRow = input("which row will you place it on? ")
+         if oldRow.isnumeric() == True and int(oldRow) >=0 and int(oldRow) <= 6 and newRow.isnumeric() == True and int(newRow) >=0 and int(newRow) <= 6:
             moveCard(oldRow, newRow, "")
+            deckIsOpen(deckNumber)
+         else:
             deckIsOpen(deckNumber)
       elif flipDeck == "cheat":
          if deckNumber == len(DECK) - 1:
@@ -252,29 +289,43 @@ def deckIsOpen(deckNumber):
          print("that is not a valid input. Please try again")
          deckIsOpen(deckNumber)
       howManyMoves += 1
+   else:
+      winDisplay()
 
-def winDisplay():
+def winDisplay(): #should display when wincheck() returns true, prints how many moves it took to win and triggers playAgainQ()
    printTopCards()
    print("you won at solitaire in " + str(howManyMoves) + " moves! congrats")
+   playAgainQ()
+   
+def playAgainQ(): #will reset the game if Y and will quit the program if N
+   Q = input("play again? [Y/n]")
+   if Q == "Y" or Q == "y":
+      start()
+   elif Q == "N" or Q == "n":
+      pass
+   else:
+      playAgainQ()
    
 
-def playGame(x):
+def playGame(x): #asks for input when the deck is closed
    global howManyMoves
-   gamewin = winCheck()
-   if gamewin == False:
+   if winCheck() == False:
       printTopCards()
       inputType = input("check in deck [check], add card to tableau [table], or move card to another stack [move]: ")
       if inputType == "check":
          deckIsOpen(x)
       elif inputType == "table":
          tablecard = input("card from which row?")
-         tableau(tablecard, "", "")
+         if tablecard.isnumeric() == True:
+            tableau(int(tablecard), "", "")
+         StupidBugCheckRows()
          playGame(x)
       elif inputType == "move":
-         oldRow = int(input("which row do you want to move? "))
-         newRow = int(input("which row will you place it on? "))
-         if oldRow != "" and oldRow >=0 and oldRow <= 6 and newRow != "" and newRow >=0 and newRow <= 6:
-            moveCard(oldRow, newRow, "")
+         oldRow = input("which row do you want to move? ")
+         newRow = input("which row will you place it on? ")
+         if oldRow.isnumeric() == True and int(oldRow) >=0 and int(oldRow) <= 6 and newRow.isnumeric() == True and int(newRow) >=0 and int(newRow) <= 6:
+            moveCard(int(oldRow), int(newRow), "")
+         StupidBugCheckRows()
          playGame(x)
       elif inputType == "quit":
          start()
@@ -285,7 +336,7 @@ def playGame(x):
    else:
       winDisplay()
 
-def start():
+def start(): #shuffles the deck, triggers the start of the game (playgame())
    global ORDERED_DECK
    global DECK
    DECK.clear()
@@ -300,10 +351,10 @@ def start():
       ['planet', 7], ['planet', 8], ['planet', 9], ['planet', 10], ['planet', 11], ['planet', 12] ]
    for row in SHOWN_ROWS:
       row.clear()
-   shuffleDeck()
+   for row in SECRET_ROWS:
+      row.clear()
    setup()
    playGame(3)
-   print("you won at solitaire in " + str(howManyMoves) + " moves! congrats")
 
 if __name__ == "__main__":
    #runs on program start
